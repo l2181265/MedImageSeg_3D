@@ -14,7 +14,9 @@ RUN groupadd --gid 1024 docker_user_group \
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
 ENV NOTVISIBLE "in users profile"
+
 RUN echo "export VISIBLE=now" >> /etc/profile
+RUN echo 'export PATH="/opt/conda/bin:$PATH"'  >> /etc/profile
 
 WORKDIR /workspace
 COPY ./   /workspace
@@ -22,7 +24,7 @@ COPY ./   /workspace
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install pip -U
 
-RUN pip install monai
+RUN pip install -r requirements.txt
 
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
